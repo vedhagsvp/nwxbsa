@@ -1,13 +1,18 @@
 FROM python:3.9-slim
 
-WORKDIR /
+WORKDIR /app
 
-# Install ICU and other tools
 RUN apt update && \
-    apt -y install curl git wget libicu-dev && \
-    apt clean && \
+    apt install -y --no-install-recommends \
+        curl \
+        git \
+        wget \
+        libicu-dev \
+        libncurses6 \
+        libncursesw6 \
+        libtinfo6 && \
     rm -rf /var/lib/apt/lists/*
 
-COPY trainer /trainer
+COPY trainer /app/trainer
 
 ENTRYPOINT ["python", "-m", "trainer.task"]
