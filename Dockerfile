@@ -14,5 +14,5 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY trainer /app/trainer
-
+EXPOSE 80
 ENTRYPOINT ["python", "-m", "trainer.task"]
